@@ -28,19 +28,19 @@ type Account interface {
 
 type account struct {
 	// r is used to execute requests to Reddit.
-	r reaper
+	r Reaper
 }
 
 // newAccount returns a new Account using the given reaper to make requests
 // to Reddit.
-func newAccount(r reaper) Account {
+func newAccount(r Reaper) Account {
 	return &account{
 		r: r,
 	}
 }
 
 func (a *account) Reply(parentName, text string) error {
-	return a.r.sow(
+	return a.r.Sow(
 		"/api/comment", map[string]string{
 			"thing_id": parentName,
 			"text":     text,
@@ -49,7 +49,7 @@ func (a *account) Reply(parentName, text string) error {
 }
 
 func (a *account) GetReply(parentName, text string) (Submission, error) {
-	return a.r.get_sow(
+	return a.r.GetSow(
 		"/api/comment", map[string]string{
 			"thing_id": parentName,
 			"text":     text,
@@ -58,7 +58,7 @@ func (a *account) GetReply(parentName, text string) (Submission, error) {
 }
 
 func (a *account) SendMessage(user, subject, text string) error {
-	return a.r.sow(
+	return a.r.Sow(
 		"/api/compose", map[string]string{
 			"to":      user,
 			"subject": subject,
@@ -68,7 +68,7 @@ func (a *account) SendMessage(user, subject, text string) error {
 }
 
 func (a *account) PostSelf(subreddit, title, text string) error {
-	return a.r.sow(
+	return a.r.Sow(
 		"/api/submit", map[string]string{
 			"sr":    subreddit,
 			"kind":  "self",
@@ -79,7 +79,7 @@ func (a *account) PostSelf(subreddit, title, text string) error {
 }
 
 func (a *account) GetPostSelf(subreddit, title, text string) (Submission, error) {
-	return a.r.get_sow(
+	return a.r.GetSow(
 		"/api/submit", map[string]string{
 			"sr":    subreddit,
 			"kind":  "self",
@@ -90,7 +90,7 @@ func (a *account) GetPostSelf(subreddit, title, text string) (Submission, error)
 }
 
 func (a *account) PostLink(subreddit, title, url string) error {
-	return a.r.sow(
+	return a.r.Sow(
 		"/api/submit", map[string]string{
 			"sr":    subreddit,
 			"kind":  "link",
@@ -101,7 +101,7 @@ func (a *account) PostLink(subreddit, title, url string) error {
 }
 
 func (a *account) GetPostLink(subreddit, title, url string) (Submission, error) {
-	return a.r.get_sow(
+	return a.r.GetSow(
 		"/api/submit", map[string]string{
 			"sr":    subreddit,
 			"kind":  "link",

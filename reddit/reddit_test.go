@@ -211,6 +211,7 @@ func testRequests(cases []testCase, t *testing.T) {
 		Account: newAccount(r),
 		Lurker:  newLurker(r),
 		Scanner: newScanner(r),
+		Reaper:  r,
 	}
 	for _, test := range cases {
 		if err := test.f(b); err != test.err {

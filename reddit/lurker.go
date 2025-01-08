@@ -7,15 +7,15 @@ type Lurker interface {
 }
 
 type lurker struct {
-	r reaper
+	r Reaper
 }
 
-func newLurker(r reaper) Lurker {
+func newLurker(r Reaper) Lurker {
 	return &lurker{r: r}
 }
 
 func (s *lurker) Thread(permalink string) (*Post, error) {
-	harvest, err := s.r.reap(
+	harvest, err := s.r.Reap(
 		permalink+".json",
 		map[string]string{"raw_json": "1"},
 	)

@@ -95,7 +95,7 @@ func TestReap(t *testing.T) {
 			mu:       &sync.Mutex{},
 		}
 
-		Harvest, err := r.reap(test.path, test.values)
+		Harvest, err := r.Reap(test.path, test.values)
 		if err != nil {
 			t.Errorf("Error reaping input %d: %v", i, err)
 		}
@@ -159,7 +159,7 @@ func TestSow(t *testing.T) {
 			mu:       &sync.Mutex{},
 		}
 
-		if err := r.sow(test.path, test.values); err != nil {
+		if err := r.Sow(test.path, test.values); err != nil {
 			t.Errorf("Error reaping input %d: %v", i, err)
 		}
 
@@ -170,14 +170,14 @@ func TestSow(t *testing.T) {
 }
 
 func TestRateBlockReap(t *testing.T) {
-	testRateBlock(func(r reaper) { r.reap("", nil) }, t)
+	testRateBlock(func(r Reaper) { r.Reap("", nil) }, t)
 }
 
 func TestRateBlockSow(t *testing.T) {
-	testRateBlock(func(r reaper) { r.sow("", nil) }, t)
+	testRateBlock(func(r Reaper) { r.Sow("", nil) }, t)
 }
 
-func testRateBlock(f func(reaper), t *testing.T) {
+func testRateBlock(f func(Reaper), t *testing.T) {
 	start := time.Now()
 	r := &reaperImpl{
 		cli:    &mockClient{},

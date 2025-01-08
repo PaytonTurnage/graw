@@ -31,15 +31,15 @@ type Scanner interface {
 }
 
 type scanner struct {
-	r reaper
+	r Reaper
 }
 
-func newScanner(r reaper) Scanner {
+func newScanner(r Reaper) Scanner {
 	return &scanner{r: r}
 }
 
 func (s *scanner) Listing(path, after string) (Harvest, error) {
-	return s.r.reap(
+	return s.r.Reap(
 		path, map[string]string{
 			"raw_json": "1",
 			"limit":    "100",
@@ -59,5 +59,5 @@ func (s *scanner) ListingWithParams(path string, params map[string]string) (
 	for key, value := range params {
 		reaperParams[key] = value
 	}
-	return s.r.reap(path, reaperParams)
+	return s.r.Reap(path, reaperParams)
 }

@@ -10,20 +10,22 @@ type mockReaper struct {
 	err error
 }
 
-func (m *mockReaper) reap(path string, _ map[string]string) (Harvest, error) {
+func (m *mockReaper) Reap(path string, _ map[string]string) (Harvest, error) {
 	m.path = path
 	return m.h, m.err
 }
 
-func (m *mockReaper) sow(path string, _ map[string]string) error {
+func (m *mockReaper) Sow(path string, _ map[string]string) error {
 	m.path = path
 	return m.err
 }
 
-func (m *mockReaper) get_sow(path string, _ map[string]string) (Submission, error) {
+func (m *mockReaper) GetSow(path string, _ map[string]string) (Submission, error) {
 	m.path = path
 	return m.s, m.err
 }
+
+func (m *mockReaper) RateBlock() {}
 
 func reaperWhich(h Harvest, err error) *mockReaper {
 	return &mockReaper{

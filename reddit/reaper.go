@@ -28,16 +28,18 @@ type reaperConfig struct {
 	rate       time.Duration
 }
 
-// reaper is a high level api for Reddit HTTP requests.
-type reaper interface {
-	// reap executes a GET request to Reddit and returns the elements from
+// Reaper is a high level api for Reddit HTTP requests.
+type Reaper interface {
+	// Reap executes a GET request to Reddit and returns the elements from
 	// the endpoint.
-	reap(path string, values map[string]string) (Harvest, error)
-	// sow executes a POST request to Reddit.
-	sow(path string, values map[string]string) error
-	// get_sow executes a POST request to Reddit
-	// and returns the response, usually the posted item
-	get_sow(path string, values map[string]string) (Submission, error)
+	Reap(path string, values map[string]string) (Harvest, error)
+	// Sow executes a POST request to Reddit.
+	Sow(path string, values map[string]string) error
+	// GetSow executes a POST request to Reddit
+	// and returns the response, usually the posted item.
+	GetSow(path string, values map[string]string) (Submission, error)
+	// RateBlock consumes an API call, if none are available RateBlock blocks.
+	RateBlock()
 }
 
 type reaperImpl struct {
@@ -51,7 +53,7 @@ type reaperImpl struct {
 	mu         *sync.Mutex
 }
 
-func newReaper(c reaperConfig) reaper {
+func newReaper(c reaperConfig) Reaper {
 	return &reaperImpl{
 		cli:        c.client,
 		parser:     c.parser,
@@ -63,8 +65,8 @@ func newReaper(c reaperConfig) reaper {
 	}
 }
 
-func (r *reaperImpl) reap(path string, values map[string]string) (Harvest, error) {
-	r.rateBlock()
+func (r *reaperImpl) Reap(path string, values map[string]string) (Harvest, error) {
+	r.RateBlock()
 	resp, err := r.cli.Do(
 		&http.Request{
 			Method: "GET",
@@ -85,8 +87,8 @@ func (r *reaperImpl) reap(path string, values map[string]string) (Harvest, error
 	}, err
 }
 
-func (r *reaperImpl) sow(path string, values map[string]string) error {
-	r.rateBlock()
+func (r *reaperImpl) Sow(path string, values map[string]string) error {
+	r.RateBlock()
 	_, err := r.cli.Do(
 		&http.Request{
 			Method: "POST",
@@ -99,8 +101,8 @@ func (r *reaperImpl) sow(path string, values map[string]string) error {
 	return err
 }
 
-func (r *reaperImpl) get_sow(path string, values map[string]string) (Submission, error) {
-	r.rateBlock()
+func (r *reaperImpl) GetSow(path string, values map[string]string) (Submission, error) {
+	r.RateBlock()
 	values["api_type"] = "json"
 	resp, err := r.cli.Do(
 		&http.Request{
@@ -118,7 +120,7 @@ func (r *reaperImpl) get_sow(path string, values map[string]string) (Submission,
 	return r.parser.parse_submitted(resp)
 }
 
-func (r *reaperImpl) rateBlock() {
+func (r *reaperImpl) RateBlock() {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 

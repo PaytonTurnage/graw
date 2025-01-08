@@ -28,12 +28,14 @@ type Bot interface {
 	Account
 	Lurker
 	Scanner
+	Reaper
 }
 
 type bot struct {
 	Account
 	Lurker
 	Scanner
+	Reaper
 }
 
 // NewBot returns a logged in handle to the Reddit API.
@@ -52,6 +54,7 @@ func NewBot(c BotConfig) (Bot, error) {
 		Account: newAccount(r),
 		Lurker:  newLurker(r),
 		Scanner: newScanner(r),
+		Reaper: r,
 	}, err
 }
 
